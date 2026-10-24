@@ -1,0 +1,569 @@
+{
+  "version": 2,
+  "source": "麦当劳公开营养信息的近似估值（仅供对比演示，非官方实时数据）",
+  "unit": {
+    "calories": "kcal",
+    "protein": "g",
+    "sodium": "mg"
+  },
+  "categories": [
+    {
+      "id": "burger",
+      "name": "汉堡"
+    },
+    {
+      "id": "side",
+      "name": "小食"
+    },
+    {
+      "id": "drink",
+      "name": "饮料"
+    },
+    {
+      "id": "dessert",
+      "name": "甜品"
+    },
+    {
+      "id": "breakfast",
+      "name": "早餐"
+    }
+  ],
+  "items": [
+    {
+      "id": "hamburger",
+      "name": "汉堡包",
+      "category": "burger",
+      "calories": 250,
+      "protein": 12.5,
+      "sodium": 510
+    },
+    {
+      "id": "cheeseburger",
+      "name": "吉士汉堡",
+      "category": "burger",
+      "calories": 300,
+      "protein": 15.0,
+      "sodium": 700
+    },
+    {
+      "id": "double-cheeseburger",
+      "name": "双层吉士汉堡",
+      "category": "burger",
+      "calories": 430,
+      "protein": 24.0,
+      "sodium": 920
+    },
+    {
+      "id": "big-mac",
+      "name": "巨无霸",
+      "category": "burger",
+      "calories": 550,
+      "protein": 25.8,
+      "sodium": 1010
+    },
+    {
+      "id": "filet-o-fish",
+      "name": "麦香鱼",
+      "category": "burger",
+      "calories": 390,
+      "protein": 16.0,
+      "sodium": 660
+    },
+    {
+      "id": "mccrispy-chicken",
+      "name": "麦香鸡",
+      "category": "burger",
+      "calories": 400,
+      "protein": 17.0,
+      "sodium": 800
+    },
+    {
+      "id": "double-mccrispy",
+      "name": "双层麦香鸡",
+      "category": "burger",
+      "calories": 520,
+      "protein": 27.0,
+      "sodium": 1050
+    },
+    {
+      "id": "spicy-chicken-burger",
+      "name": "麦辣鸡腿堡",
+      "category": "burger",
+      "calories": 570,
+      "protein": 26.0,
+      "sodium": 1100
+    },
+    {
+      "id": "grilled-chicken-burger",
+      "name": "板烧鸡腿堡",
+      "category": "burger",
+      "calories": 430,
+      "protein": 24.0,
+      "sodium": 890
+    },
+    {
+      "id": "spicy-grilled-chicken",
+      "name": "麻辣板烧鸡腿堡",
+      "category": "burger",
+      "calories": 450,
+      "protein": 24.5,
+      "sodium": 950
+    },
+    {
+      "id": "bacon-double-beef",
+      "name": "培根蔬萃双层牛堡",
+      "category": "burger",
+      "calories": 600,
+      "protein": 32.0,
+      "sodium": 1180
+    },
+    {
+      "id": "angus-beef-burger",
+      "name": "安格斯厚牛堡",
+      "category": "burger",
+      "calories": 800,
+      "protein": 40.0,
+      "sodium": 1380
+    },
+    {
+      "id": "double-angus-cheese",
+      "name": "双层安格斯厚牛芝士堡",
+      "category": "burger",
+      "calories": 950,
+      "protein": 50.0,
+      "sodium": 1700
+    },
+    {
+      "id": "garden-veggie-burger",
+      "name": "田园蔬萃堡",
+      "category": "burger",
+      "calories": 350,
+      "protein": 12.0,
+      "sodium": 720
+    },
+    {
+      "id": "mcnuggets-5",
+      "name": "麦乐鸡（5块）",
+      "category": "side",
+      "calories": 220,
+      "protein": 10.5,
+      "sodium": 400
+    },
+    {
+      "id": "mcnuggets-10",
+      "name": "麦乐鸡（10块）",
+      "category": "side",
+      "calories": 440,
+      "protein": 19.0,
+      "sodium": 780
+    },
+    {
+      "id": "mcnuggets-20",
+      "name": "麦乐鸡（20块）",
+      "category": "side",
+      "calories": 880,
+      "protein": 38.0,
+      "sodium": 1560
+    },
+    {
+      "id": "fries-small",
+      "name": "薯条（小份）",
+      "category": "side",
+      "calories": 230,
+      "protein": 3.0,
+      "sodium": 130
+    },
+    {
+      "id": "fries-medium",
+      "name": "薯条（中份）",
+      "category": "side",
+      "calories": 330,
+      "protein": 4.0,
+      "sodium": 180
+    },
+    {
+      "id": "fries-large",
+      "name": "薯条（大份）",
+      "category": "side",
+      "calories": 430,
+      "protein": 5.0,
+      "sodium": 220
+    },
+    {
+      "id": "twister-fries",
+      "name": "扭扭薯条",
+      "category": "side",
+      "calories": 340,
+      "protein": 4.5,
+      "sodium": 300
+    },
+    {
+      "id": "spicy-wings-2",
+      "name": "麦辣鸡翅（2块）",
+      "category": "side",
+      "calories": 190,
+      "protein": 12.0,
+      "sodium": 500
+    },
+    {
+      "id": "spicy-wings-4",
+      "name": "麦辣鸡翅（4块）",
+      "category": "side",
+      "calories": 380,
+      "protein": 24.0,
+      "sodium": 1000
+    },
+    {
+      "id": "spicy-chicken-leg",
+      "name": "麦辣鸡腿",
+      "category": "side",
+      "calories": 260,
+      "protein": 20.0,
+      "sodium": 620
+    },
+    {
+      "id": "popcorn-chicken-medium",
+      "name": "劲爆鸡米花（中份）",
+      "category": "side",
+      "calories": 380,
+      "protein": 20.0,
+      "sodium": 890
+    },
+    {
+      "id": "popcorn-chicken-large",
+      "name": "劲爆鸡米花（大份）",
+      "category": "side",
+      "calories": 500,
+      "protein": 26.0,
+      "sodium": 1150
+    },
+    {
+      "id": "corn-cup-small",
+      "name": "玉米杯（小）",
+      "category": "side",
+      "calories": 70,
+      "protein": 2.0,
+      "sodium": 5
+    },
+    {
+      "id": "corn-cup-large",
+      "name": "玉米杯（大）",
+      "category": "side",
+      "calories": 130,
+      "protein": 4.0,
+      "sodium": 10
+    },
+    {
+      "id": "garden-salad",
+      "name": "田园蔬菜沙拉",
+      "category": "side",
+      "calories": 100,
+      "protein": 3.0,
+      "sodium": 200
+    },
+    {
+      "id": "coke-small",
+      "name": "可口可乐（小杯）",
+      "category": "drink",
+      "calories": 110,
+      "protein": 0.0,
+      "sodium": 10
+    },
+    {
+      "id": "coke-medium",
+      "name": "可口可乐（中杯）",
+      "category": "drink",
+      "calories": 150,
+      "protein": 0.0,
+      "sodium": 15
+    },
+    {
+      "id": "coke-large",
+      "name": "可口可乐（大杯）",
+      "category": "drink",
+      "calories": 210,
+      "protein": 0.0,
+      "sodium": 20
+    },
+    {
+      "id": "coke-zero-medium",
+      "name": "零度可乐（中杯）",
+      "category": "drink",
+      "calories": 0,
+      "protein": 0.0,
+      "sodium": 20
+    },
+    {
+      "id": "sprite-medium",
+      "name": "雪碧（中杯）",
+      "category": "drink",
+      "calories": 140,
+      "protein": 0.0,
+      "sodium": 15
+    },
+    {
+      "id": "fanta-medium",
+      "name": "芬达（中杯）",
+      "category": "drink",
+      "calories": 150,
+      "protein": 0.0,
+      "sodium": 20
+    },
+    {
+      "id": "minute-maid-orange",
+      "name": "美汁源果粒橙（中杯）",
+      "category": "drink",
+      "calories": 160,
+      "protein": 1.0,
+      "sodium": 15
+    },
+    {
+      "id": "ice-tea-medium",
+      "name": "冰爽茶（中杯）",
+      "category": "drink",
+      "calories": 90,
+      "protein": 0.0,
+      "sodium": 10
+    },
+    {
+      "id": "lemon-black-tea",
+      "name": "柠檬红茶（中杯）",
+      "category": "drink",
+      "calories": 100,
+      "protein": 0.0,
+      "sodium": 10
+    },
+    {
+      "id": "milk",
+      "name": "纯牛奶",
+      "category": "drink",
+      "calories": 130,
+      "protein": 7.0,
+      "sodium": 100
+    },
+    {
+      "id": "hot-soy-milk",
+      "name": "热豆浆",
+      "category": "drink",
+      "calories": 120,
+      "protein": 8.0,
+      "sodium": 60
+    },
+    {
+      "id": "americano-medium",
+      "name": "美式咖啡（中杯）",
+      "category": "drink",
+      "calories": 15,
+      "protein": 0.3,
+      "sodium": 10
+    },
+    {
+      "id": "latte-medium",
+      "name": "拿铁（中杯）",
+      "category": "drink",
+      "calories": 120,
+      "protein": 6.0,
+      "sodium": 90
+    },
+    {
+      "id": "iced-latte-medium",
+      "name": "冰拿铁（中杯）",
+      "category": "drink",
+      "calories": 130,
+      "protein": 5.5,
+      "sodium": 85
+    },
+    {
+      "id": "cappuccino-medium",
+      "name": "卡布奇诺（中杯）",
+      "category": "drink",
+      "calories": 110,
+      "protein": 5.5,
+      "sodium": 85
+    },
+    {
+      "id": "mocha-medium",
+      "name": "摩卡（中杯）",
+      "category": "drink",
+      "calories": 200,
+      "protein": 7.0,
+      "sodium": 110
+    },
+    {
+      "id": "hot-chocolate-medium",
+      "name": "热巧克力（中杯）",
+      "category": "drink",
+      "calories": 190,
+      "protein": 6.5,
+      "sodium": 120
+    },
+    {
+      "id": "taro-pie",
+      "name": "香芋派",
+      "category": "dessert",
+      "calories": 240,
+      "protein": 3.0,
+      "sodium": 200
+    },
+    {
+      "id": "pineapple-pie",
+      "name": "菠萝派",
+      "category": "dessert",
+      "calories": 250,
+      "protein": 3.0,
+      "sodium": 210
+    },
+    {
+      "id": "apple-pie",
+      "name": "苹果派",
+      "category": "dessert",
+      "calories": 240,
+      "protein": 2.5,
+      "sodium": 200
+    },
+    {
+      "id": "chocolate-pie",
+      "name": "巧克力派",
+      "category": "dessert",
+      "calories": 260,
+      "protein": 3.5,
+      "sodium": 210
+    },
+    {
+      "id": "cone-vanilla",
+      "name": "甜筒（原味）",
+      "category": "dessert",
+      "calories": 180,
+      "protein": 4.0,
+      "sodium": 80
+    },
+    {
+      "id": "cone-chocolate",
+      "name": "甜筒（巧克力）",
+      "category": "dessert",
+      "calories": 220,
+      "protein": 4.5,
+      "sodium": 90
+    },
+    {
+      "id": "sundae-chocolate",
+      "name": "巧克力新地",
+      "category": "dessert",
+      "calories": 340,
+      "protein": 6.0,
+      "sodium": 120
+    },
+    {
+      "id": "sundae-strawberry",
+      "name": "草莓新地",
+      "category": "dessert",
+      "calories": 300,
+      "protein": 5.5,
+      "sodium": 110
+    },
+    {
+      "id": "mcflurry-original",
+      "name": "麦旋风（原味）",
+      "category": "dessert",
+      "calories": 330,
+      "protein": 6.0,
+      "sodium": 150
+    },
+    {
+      "id": "mcflurry-oreo",
+      "name": "麦旋风（奥利奥）",
+      "category": "dessert",
+      "calories": 380,
+      "protein": 7.0,
+      "sodium": 180
+    },
+    {
+      "id": "mcflurry-strawberry",
+      "name": "麦旋风（草莓）",
+      "category": "dessert",
+      "calories": 360,
+      "protein": 6.5,
+      "sodium": 170
+    },
+    {
+      "id": "mcflurry-matcha",
+      "name": "麦旋风（抹茶）",
+      "category": "dessert",
+      "calories": 370,
+      "protein": 6.5,
+      "sodium": 165
+    },
+    {
+      "id": "egg-cheese-mcmuffin",
+      "name": "吉士蛋麦满分",
+      "category": "breakfast",
+      "calories": 300,
+      "protein": 16.0,
+      "sodium": 700
+    },
+    {
+      "id": "sausage-mcmuffin",
+      "name": "猪柳麦满分",
+      "category": "breakfast",
+      "calories": 380,
+      "protein": 18.0,
+      "sodium": 900
+    },
+    {
+      "id": "sausage-egg-mcmuffin",
+      "name": "猪柳蛋麦满分",
+      "category": "breakfast",
+      "calories": 450,
+      "protein": 22.0,
+      "sodium": 1000
+    },
+    {
+      "id": "bacon-egg-mcmuffin",
+      "name": "烟肉蛋麦满分",
+      "category": "breakfast",
+      "calories": 330,
+      "protein": 18.0,
+      "sodium": 830
+    },
+    {
+      "id": "double-egg-cheese-mcmuffin",
+      "name": "双层吉士蛋麦满分",
+      "category": "breakfast",
+      "calories": 400,
+      "protein": 23.0,
+      "sodium": 950
+    },
+    {
+      "id": "hash-brown-2",
+      "name": "薯饼（2块）",
+      "category": "breakfast",
+      "calories": 230,
+      "protein": 3.0,
+      "sodium": 400
+    },
+    {
+      "id": "hotcakes-3",
+      "name": "热香饼（3块）",
+      "category": "breakfast",
+      "calories": 350,
+      "protein": 8.0,
+      "sodium": 520
+    },
+    {
+      "id": "sausage-hotcakes",
+      "name": "猪柳热香饼",
+      "category": "breakfast",
+      "calories": 550,
+      "protein": 20.0,
+      "sodium": 1100
+    },
+    {
+      "id": "congee",
+      "name": "皮蛋瘦肉粥",
+      "category": "breakfast",
+      "calories": 180,
+      "protein": 8.0,
+      "sodium": 600
+    }
+  ]
+}

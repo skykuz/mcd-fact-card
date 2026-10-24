@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>麦当劳营养对比卡</title>
+<style>
+  :root{
+    --bg:#F3EADA;
+    --ink:#141110;
+    --accent:#FF4A1C;
+    --surface:#FFFDF7;
+    --line:rgba(20,17,16,.10);
+    --muted:rgba(20,17,16,.55);
+    --track:rgba(20,17,16,.09);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB",SimHei,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:32px 16px 56px;
+    line-height:1.5;
+  }
+  .wrap{max-width:680px;margin:0 auto;}
+
+  header{margin-bottom:22px;}
+  h1{
+    margin:0 0 6px;
+    font-size:26px;
+    letter-spacing:.5px;
+    font-weight:800;
+  }
+  h1 em{font-style:normal;color:var(--accent);}
+  .sub{margin:0;font-size:13px;color:var(--muted);}
+
+  /* 选择器 */
+  .picker{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:16px;
+    box-shadow:0 8px 24px rgba(20,17,16,.08);
+    padding:18px;
+    display:grid;
+    grid-template-columns:1fr 44px 1fr;
+    align-items:end;
+    gap:12px;
+  }
+  .field{min-width:0;}
+  .field label{
+    display:block;
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:6px;
+    letter-spacing:.5px;
+  }
+  .swap{
+    height:42px;
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:10px;
+    color:var(--ink);
+    font-size:15px;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .swap{
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease, color .18s ease;
+  }
+  .swap:hover{
+    border-color:var(--accent);color:var(--accent);
+    transform:translateY(-2px);box-shadow:0 6px 14px rgba(20,17,16,.18);
+  }
+  .swap:active{transform:translateY(0);}
+
+  /* Tab 切换 */
+  .tabs{display:flex;gap:8px;justify-content:center;margin-bottom:20px;}
+  .tab{
+    border:1px solid var(--line);
+    background:var(--surface);
+    color:var(--muted);
+    border-radius:999px;padding:9px 20px;
+    font-size:14px;font-family:inherit;cursor:pointer;
+    transition:transform .18s ease, box-shadow .18s ease, color .18s ease, background .18s ease, border-color .18s ease;
+  }
+  .tab:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(20,17,16,.14);}
+  .tab.is-active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700;}
+  .view{animation:fadeUp .28s ease both;}
+
+  /* 资产体检 */
+  .panel{
+    background:var(--surface);border:1px solid var(--line);border-radius:18px;
+    box-shadow:0 10px 26px rgba(20,17,16,.08);padding:18px 18px 16px;
+  }
+  .asset-summary{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+  .sum-item{
+    background:rgba(20,17,16,.04);border-radius:14px;padding:12px 14px;
+    display:flex;flex-direction:column;gap:2px;
+  }
+  .sum-item.urgent{background:rgba(255,74,28,.10);}
+  .sum-label{font-size:12px;color:var(--muted);}
+  .sum-num{font-size:30px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;}
+  .sum-item.urgent .sum-num{color:var(--accent);}
+  .sum-item .unit{font-size:12px;color:var(--muted);}
+  .asset-list{list-style:none;margin:0;padding:0;}
+  .asset-list li{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+    padding:11px 12px;border:1px solid var(--line);border-radius:12px;margin-bottom:9px;
+    transition:transform .16s ease, background .16s ease;
+  }
+  .asset-list li:hover{background:rgba(20,17,16,.03);transform:translateX(2px);}
+  .asset-list li.urgent{border-color:rgba(255,74,28,.45);background:rgba(255,74,28,.06);}
+  .asset-list li.expired{opacity:.55;}
+  .asset-name{font-size:14px;font-weight:700;}
+  .asset-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+  .asset-left{font-size:13px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+  .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;margin-left:6px;}
+  .tag.urgent{background:var(--accent);color:#fff;font-weight:700;}
+  .tag.expired{background:rgba(20,17,16,.12);color:var(--muted);}
+  .tag.unknown{background:rgba(20,17,16,.08);color:var(--muted);}
+  .share-btn.block{width:100%;margin:14px 0 0;padding:11px;border-radius:12px;font-size:14px;}
+  .asset-empty{padding:24px;text-align:center;color:var(--muted);font-size:13px;}
+
+  /* 榜单 */
+  .rank-wrap{
+    margin-top:22px;
+    display:grid;grid-template-columns:1fr 1fr;gap:14px;
+  }
+  .rank{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:16px;
+    box-shadow:0 8px 22px rgba(20,17,16,.07);
+    padding:16px 16px 12px;
+  }
+  .rank h3{margin:0 0 10px;font-size:14px;font-weight:800;letter-spacing:.5px;}
+  .rank ol{margin:0;padding-left:18px;}
+  .rank li{
+    margin:9px 0;font-size:13px;padding:4px 6px;border-radius:8px;
+    display:flex;flex-direction:column;gap:2px;
+    transition:background .16s ease, transform .16s ease;
+  }
+  .rank li:hover{background:rgba(20,17,16,.05);transform:translateX(2px);}
+  .rank li .line1{display:flex;justify-content:space-between;align-items:baseline;gap:8px;}
+  .rank li .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .rank li .kc{font-variant-numeric:tabular-nums;font-weight:800;color:var(--accent);white-space:nowrap;}
+  .rank li .sub{font-size:11px;color:var(--muted);}
+  .rank.good li .kc{color:var(--ink);}
+
+  /* 分享按钮 */
+  .share-btn{
+    margin-left:auto;
+    border:1px solid var(--accent);
+    background:var(--accent);
+    color:#fff;
+    border-radius:999px;
+    padding:6px 14px;
+    font-size:12px;font-weight:700;font-family:inherit;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .share-btn{
+    transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+  }
+  .share-btn:hover:not([disabled]){
+    background:#E03F14;
+    transform:translateY(-2px);
+    box-shadow:0 8px 18px rgba(255,74,28,.38);
+  }
+  .share-btn:active:not([disabled]){transform:translateY(0);}
+  .share-btn[disabled]{opacity:.45;cursor:not-allowed;background:var(--accent);}
+  .share-hint{font-size:11px;color:var(--muted);margin:8px 20px 0;}
+
+  /* 自写搜索下拉（无依赖） */
+  .combo{position:relative;}
+  .combo-input{
+    width:100%;
+    padding:11px 34px 11px 12px;
+    font-size:15px;
+    font-family:inherit;
+    color:var(--ink);
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    outline:none;
+  }
+  .combo-input:focus{border-color:var(--accent);}
+  .combo-input::placeholder{color:rgba(20,17,16,.35);}
+  .combo-clear{
+    position:absolute;right:6px;top:50%;transform:translateY(-50%);
+    width:22px;height:22px;line-height:1;
+    border:0;border-radius:50%;
+    background:rgba(20,17,16,.08);
+    color:var(--muted);
+    font-size:14px;cursor:pointer;
+    font-family:inherit;
+    padding:0;
+  }
+  .combo-clear:hover{background:var(--accent);color:#fff;}
+
+  /* 提示条 */
+  .notice{
+    margin-top:14px;
+    font-size:12px;
+    color:var(--muted);
+    background:rgba(20,17,16,.05);
+    border-left:3px solid var(--accent);
+    border-radius:8px;
+    padding:10px 12px;
+  }
+  .notice[hidden]{display:none;}
+
+  /* 空态 */
+  .empty{
+    margin-top:18px;
+    background:var(--surface);
+    border:1px dashed var(--line);
+    border-radius:16px;
+    padding:38px 20px;
+    text-align:center;
+    color:var(--muted);
+    font-size:14px;
+  }
+  .empty[hidden]{display:none;}
+
+  /* 对比卡 */
+  .card{
+    margin-top:18px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:18px;
+    box-shadow:0 12px 30px rgba(20,17,16,.10);
+    overflow:hidden;
+  }
+  .card[hidden]{display:none;}
+  .card.show{animation:fadeUp .3s ease both;}
+  .metric{animation:fadeUp .34s ease both;}
+  .metric:nth-child(2){animation-delay:.05s;}
+  .metric:nth-child(3){animation-delay:.1s;}
+  .card-head{
+    padding:18px 20px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .card-head .vs{color:var(--accent);font-weight:800;font-size:13px;letter-spacing:1px;}
+  .card-head .nameA,.card-head .nameB{font-size:19px;font-weight:800;}
+
+  .metric{padding:16px 20px;border-bottom:1px solid var(--line);}
+  .metric:last-child{border-bottom:0;}
+  .metric-title{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-size:13px;color:var(--muted);letter-spacing:.5px;margin-bottom:10px;
+  }
+  .metric-title b{color:var(--ink);font-size:14px;font-weight:700;letter-spacing:0;}
+
+  .row{display:grid;grid-template-columns:104px 1fr 96px;align-items:center;gap:10px;margin:6px 0;}
+  .row .who{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .row .bar{height:10px;background:var(--track);border-radius:999px;overflow:hidden;}
+  .row .bar i{display:block;height:100%;border-radius:999px;background:var(--ink);opacity:.72;transition:width .25s ease;}
+  .row.hi .bar i{background:var(--accent);opacity:1;}
+  .row .val{font-size:13px;text-align:right;font-variant-numeric:tabular-nums;}
+  .row.hi .val{font-weight:800;color:var(--accent);}
+
+  .diff{
+    margin-top:14px;
+    background:rgba(255,74,28,.08);
+    border-radius:12px;
+    padding:12px 14px 11px;
+    color:var(--ink);
+  }
+  .diff-lead{font-size:12px;color:var(--muted);letter-spacing:.3px;}
+  .diff-num{
+    display:flex;align-items:baseline;gap:5px;margin:2px 0 3px;
+    animation:pop .3s ease both;
+  }
+  .diff-num b{
+    font-size:34px;line-height:1;font-weight:800;
+    color:var(--accent);font-variant-numeric:tabular-nums;letter-spacing:-.5px;
+  }
+  .diff-num .unit{font-size:13px;font-weight:700;color:var(--ink);opacity:.7;}
+  .diff-txt{font-size:13px;color:var(--ink);opacity:.82;}
+  /* 对比条：A 朱橙 / B 墨黑，纯 CSS 圆角 */
+  .diff-bar{
+    display:flex;height:10px;margin-top:10px;
+    border-radius:999px;overflow:hidden;background:var(--track);
+  }
+  .diff-bar .ba{background:var(--accent);transition:width .35s ease;}
+  .diff-bar .bb{background:var(--ink);opacity:.85;transition:width .35s ease;}
+  .diff-legend{
+    display:flex;justify-content:space-between;gap:10px;
+    margin-top:6px;font-size:11px;color:var(--muted);
+  }
+  .diff-legend span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .diff-legend .la{color:var(--accent);font-weight:700;}
+  @keyframes pop{from{opacity:0;transform:translateY(6px) scale(.96);}to{opacity:1;transform:none;}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+  footer{margin-top:18px;font-size:11px;color:var(--muted);text-align:center;}
+
+  @media (max-width:680px){
+    .rank-wrap{grid-template-columns:1fr;}
+  }
+  @media (max-width:560px){
+    .asset-summary{grid-template-columns:1fr;}
+    .sum-num{font-size:26px;}
+    .tabs{gap:6px;}
+    .tab{padding:8px 14px;font-size:13px;}
+    .asset-list li{flex-direction:column;align-items:flex-start;gap:6px;}
+    .asset-left{text-align:left;}
+  }
+  @media (max-width:560px){
+    body{padding:20px 12px 40px;}
+    h1{font-size:22px;}
+    .picker{grid-template-columns:1fr;align-items:stretch;gap:10px;}
+    .swap{height:38px;width:100%;}
+    .row{grid-template-columns:76px 1fr 78px;}
+    .row .who{font-size:12px;}
+    .row .val{font-size:12px;}
+    .card-head{padding:14px 14px;}
+    .card-head .nameA,.card-head .nameB{font-size:16px;}
+    .share-btn{width:100%;margin:8px 0 0;text-align:center;}
+    .metric{padding:14px;}
+    .diff{padding:11px 12px 10px;}
+    .diff-num b{font-size:30px;}
+    .diff-legend{font-size:10px;gap:6px;}
+    .empty{padding:30px 16px;font-size:13px;}
+    .rank{padding:14px 12px 10px;}
+    .rank li .sub{font-size:10px;}
+  }
+  @media (max-width:375px){
+    .row{grid-template-columns:64px 1fr 70px;}
+    .diff-num b{font-size:27px;}
+    .combo-input{font-size:14px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>麦当劳 <em>营养对比卡</em></h1>
+    <p class="sub">输入关键词（如「堡」「鸡」「可乐」）快速筛选，选两个餐品看清真实差距。</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab is-active" id="tabCompare" type="button">&#127829; 营养对比</button>
+    <button class="tab" id="tabAssets" type="button">&#9201;&#65039; 资产体检</button>
+  </div>
+
+  <section id="viewCompare" class="view">
+  <div class="picker">
+    <div class="field">
+      <label for="inputA">餐品 A</label>
+      <div class="combo">
+        <input id="inputA" class="combo-input" type="text" list="menuList" autocomplete="off" spellcheck="false"
+               placeholder="输入关键词，如：堡、鸡">
+        <button class="combo-clear" id="clearA" type="button" title="清除">&#215;</button>
+      </div>
+    </div>
+    <button class="swap" id="swap" type="button" title="交换 A / B">&#8646;</button>
+    <div class="field">
+      <label for="inputB">餐品 B</label>
+      <div class="combo">
+        <input id="inputB" class="combo-input" type="text" list="menuList" autocomplete="off" spellcheck="false"
+               placeholder="输入关键词，如：堡、鸡">
+        <button class="combo-clear" id="clearB" type="button" title="清除">&#215;</button>
+      </div>
+    </div>
+  </div>
+  <datalist id="menuList"></datalist>
+
+  <div class="notice" id="notice" hidden></div>
+
+  <div class="empty" id="empty">请选择两个<strong>不同</strong>的餐品，对比结果会显示在这里。</div>
+
+  <section class="card" id="card" hidden>
+    <div class="card-head">
+      <span class="nameA" id="nameA"></span>
+      <span class="vs">VS</span>
+      <span class="nameB" id="nameB"></span>
+      <button class="share-btn" id="shareBtn" type="button" disabled>生成图片</button>
+    </div>
+    <div id="metrics"></div>
+    <p class="share-hint" id="shareHint" hidden></p>
+  </section>
+
+  <div class="rank-wrap">
+    <div class="rank hot">
+      <h3>&#128293; 热量刺客 Top 5</h3>
+      <ol id="rankHot"></ol>
+    </div>
+    <div class="rank good">
+      <h3>&#127793; 减脂红榜 Top 5</h3>
+      <ol id="rankGood"></ol>
+    </div>
+  </div>
+
+  </section>
+
+  <section id="viewAssets" class="view" hidden>
+    <div class="panel">
+      <div class="asset-summary">
+        <div class="sum-item">
+          <span class="sum-label">当前总资产估值</span>
+          <span class="sum-num" id="sumTotal">--</span>
+          <span class="unit">元（按面值与数量折算）</span>
+        </div>
+        <div class="sum-item urgent">
+          <span class="sum-label">24 小时内即将流失</span>
+          <span class="sum-num" id="sumLoss">--</span>
+          <span class="unit" id="sumLossUnit">元</span>
+        </div>
+      </div>
+      <ul class="asset-list" id="assetList"></ul>
+      <button class="share-btn block" id="reportBtn" type="button">生成体检报告</button>
+      <p class="share-hint" id="reportHint" hidden></p>
+    </div>
+  </section>
+
+  <footer>换算口径：热量 15 大卡 ≈ 爬 1 层楼 ｜ 蛋白质 6 克 ≈ 1 个鸡蛋 ｜ 钠按毫克→克换算</footer>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- 内置兜底数据：与 menu.json 由同一脚本生成，内容完全一致 ---------- */
+  /* file:// 下浏览器（Chrome / Edge）会以 CORS 策略拦截本地 json 读取，
+     此时 fetch 与 XHR 均失败，双击打开也能靠这份兜底数据正常出卡片。 */
+  var CATEGORY_NAMES = {
+    burger: "汉堡", side: "小食", drink: "饮料", dessert: "甜品", breakfast: "早餐"
+  };
+
+  var EMBEDDED = {
+    "version": 2,
+    "categories": {"burger":"汉堡","side":"小食","drink":"饮料","dessert":"甜品","breakfast":"早餐"},
+    "items": [
+      {"id":"hamburger","name":"汉堡包","category":"burger","calories":250,"protein":12.5,"sodium":510},
+      {"id":"cheeseburger","name":"吉士汉堡","category":"burger","calories":300,"protein":15.0,"sodium":700},
+      {"id":"double-cheeseburger","name":"双层吉士汉堡","category":"burger","calories":430,"protein":24.0,"sodium":920},
+      {"id":"big-mac","name":"巨无霸","category":"burger","calories":550,"protein":25.8,"sodium":1010},
+      {"id":"filet-o-fish","name":"麦香鱼","category":"burger","calories":390,"protein":16.0,"sodium":660},
+      {"id":"mccrispy-chicken","name":"麦香鸡","category":"burger","calories":400,"protein":17.0,"sodium":800},
+      {"id":"double-mccrispy","name":"双层麦香鸡","category":"burger","calories":520,"protein":27.0,"sodium":1050},
+      {"id":"spicy-chicken-burger","name":"麦辣鸡腿堡","category":"burger","calories":570,"protein":26.0,"sodium":1100},
+      {"id":"grilled-chicken-burger","name":"板烧鸡腿堡","category":"burger","calories":430,"protein":24.0,"sodium":890},
+      {"id":"spicy-grilled-chicken","name":"麻辣板烧鸡腿堡","category":"burger","calories":450,"protein":24.5,"sodium":950},
+      {"id":"bacon-double-beef","name":"培根蔬萃双层牛堡","category":"burger","calories":600,"protein":32.0,"sodium":1180},
+      {"id":"angus-beef-burger","name":"安格斯厚牛堡","category":"burger","calories":800,"protein":40.0,"sodium":1380},
+      {"id":"double-angus-cheese","name":"双层安格斯厚牛芝士堡","category":"burger","calories":950,"protein":50.0,"sodium":1700},
+      {"id":"garden-veggie-burger","name":"田园蔬萃堡","category":"burger","calories":350,"protein":12.0,"sodium":720},
+      {"id":"mcnuggets-5","name":"麦乐鸡（5块）","category":"side","calories":220,"protein":10.5,"sodium":400},
+      {"id":"mcnuggets-10","name":"麦乐鸡（10块）","category":"side","calories":440,"protein":19.0,"sodium":780},
+      {"id":"mcnuggets-20","name":"麦乐鸡（20块）","category":"side","calories":880,"protein":38.0,"sodium":1560},
+      {"id":"fries-small","name":"薯条（小份）","category":"side","calories":230,"protein":3.0,"sodium":130},
+      {"id":"fries-medium","name":"薯条（中份）","category":"side","calories":330,"protein":4.0,"sodium":180},
+      {"id":"fries-large","name":"薯条（大份）","category":"side","calories":430,"protein":5.0,"sodium":220},
+      {"id":"twister-fries","name":"扭扭薯条","category":"side","calories":340,"protein":4.5,"sodium":300},
+      {"id":"spicy-wings-2","name":"麦辣鸡翅（2块）","category":"side","calories":190,"protein":12.0,"sodium":500},
+      {"id":"spicy-wings-4","name":"麦辣鸡翅（4块）","category":"side","calories":380,"protein":24.0,"sodium":1000},
+      {"id":"spicy-chicken-leg","name":"麦辣鸡腿","category":"side","calories":260,"protein":20.0,"sodium":620},
+      {"id":"popcorn-chicken-medium","name":"劲爆鸡米花（中份）","category":"side","calories":380,"protein":20.0,"sodium":890},
+      {"id":"popcorn-chicken-large","name":"劲爆鸡米花（大份）","category":"side","calories":500,"protein":26.0,"sodium":1150},
+      {"id":"corn-cup-small","name":"玉米杯（小）","category":"side","calories":70,"protein":2.0,"sodium":5},
+      {"id":"corn-cup-large","name":"玉米杯（大）","category":"side","calories":130,"protein":4.0,"sodium":10},
+      {"id":"garden-salad","name":"田园蔬菜沙拉","category":"side","calories":100,"protein":3.0,"sodium":200},
+      {"id":"coke-small","name":"可口可乐（小杯）","category":"drink","calories":110,"protein":0.0,"sodium":10},
+      {"id":"coke-medium","name":"可口可乐（中杯）","category":"drink","calories":150,"protein":0.0,"sodium":15},
+      {"id":"coke-large","name":"可口可乐（大杯）","category":"drink","calories":210,"protein":0.0,"sodium":20},
+      {"id":"coke-zero-medium","name":"零度可乐（中杯）","category":"drink","calories":0,"protein":0.0,"sodium":20},
+      {"id":"sprite-medium","name":"雪碧（中杯）","category":"drink","calories":140,"protein":0.0,"sodium":15},
+      {"id":"fanta-medium","name":"芬达（中杯）","category":"drink","calories":150,"protein":0.0,"sodium":20},
+      {"id":"minute-maid-orange","name":"美汁源果粒橙（中杯）","category":"drink","calories":160,"protein":1.0,"sodium":15},
+      {"id":"ice-tea-medium","name":"冰爽茶（中杯）","category":"drink","calories":90,"protein":0.0,"sodium":10},
+      {"id":"lemon-black-tea","name":"柠檬红茶（中杯）","category":"drink","calories":100,"protein":0.0,"sodium":10},
+      {"id":"milk","name":"纯牛奶","category":"drink","calories":130,"protein":7.0,"sodium":100},
+      {"id":"hot-soy-milk","name":"热豆浆","category":"drink","calories":120,"protein":8.0,"sodium":60},
+      {"id":"americano-medium","name":"美式咖啡（中杯）","category":"drink","calories":15,"protein":0.3,"sodium":10},
+      {"id":"latte-medium","name":"拿铁（中杯）","category":"drink","calories":120,"protein":6.0,"sodium":90},
+      {"id":"iced-latte-medium","name":"冰拿铁（中杯）","category":"drink","calories":130,"protein":5.5,"sodium":85},
+      {"id":"cappuccino-medium","name":"卡布奇诺（中杯）","category":"drink","calories":110,"protein":5.5,"sodium":85},
+      {"id":"mocha-medium","name":"摩卡（中杯）","category":"drink","calories":200,"protein":7.0,"sodium":110},
+      {"id":"hot-chocolate-medium","name":"热巧克力（中杯）","category":"drink","calories":190,"protein":6.5,"sodium":120},
+      {"id":"taro-pie","name":"香芋派","category":"dessert","calories":240,"protein":3.0,"sodium":200},
+      {"id":"pineapple-pie","name":"菠萝派","category":"dessert","calories":250,"protein":3.0,"sodium":210},
+      {"id":"apple-pie","name":"苹果派","category":"dessert","calories":240,"protein":2.5,"sodium":200},
+      {"id":"chocolate-pie","name":"巧克力派","category":"dessert","calories":260,"protein":3.5,"sodium":210},
+      {"id":"cone-vanilla","name":"甜筒（原味）","category":"dessert","calories":180,"protein":4.0,"sodium":80},
+      {"id":"cone-chocolate","name":"甜筒（巧克力）","category":"dessert","calories":220,"protein":4.5,"sodium":90},
+      {"id":"sundae-chocolate","name":"巧克力新地","category":"dessert","calories":340,"protein":6.0,"sodium":120},
+      {"id":"sundae-strawberry","name":"草莓新地","category":"dessert","calories":300,"protein":5.5,"sodium":110},
+      {"id":"mcflurry-original","name":"麦旋风（原味）","category":"dessert","calories":330,"protein":6.0,"sodium":150},
+      {"id":"mcflurry-oreo","name":"麦旋风（奥利奥）","category":"dessert","calories":380,"protein":7.0,"sodium":180},
+      {"id":"mcflurry-strawberry","name":"麦旋风（草莓）","category":"dessert","calories":360,"protein":6.5,"sodium":170},
+      {"id":"mcflurry-matcha","name":"麦旋风（抹茶）","category":"dessert","calories":370,"protein":6.5,"sodium":165},
+      {"id":"egg-cheese-mcmuffin","name":"吉士蛋麦满分","category":"breakfast","calories":300,"protein":16.0,"sodium":700},
+      {"id":"sausage-mcmuffin","name":"猪柳麦满分","category":"breakfast","calories":380,"protein":18.0,"sodium":900},
+      {"id":"sausage-egg-mcmuffin","name":"猪柳蛋麦满分","category":"breakfast","calories":450,"protein":22.0,"sodium":1000},
+      {"id":"bacon-egg-mcmuffin","name":"烟肉蛋麦满分","category":"breakfast","calories":330,"protein":18.0,"sodium":830},
+      {"id":"double-egg-cheese-mcmuffin","name":"双层吉士蛋麦满分","category":"breakfast","calories":400,"protein":23.0,"sodium":950},
+      {"id":"hash-brown-2","name":"薯饼（2块）","category":"breakfast","calories":230,"protein":3.0,"sodium":400},
+      {"id":"hotcakes-3","name":"热香饼（3块）","category":"breakfast","calories":350,"protein":8.0,"sodium":520},
+      {"id":"sausage-hotcakes","name":"猪柳热香饼","category":"breakfast","calories":550,"protein":20.0,"sodium":1100},
+      {"id":"congee","name":"皮蛋瘦肉粥","category":"breakfast","calories":180,"protein":8.0,"sodium":600}
+    ]
+  };
+
+  var METRICS = [
+    { key:"calories", label:"热量",   unit:"大卡", diffUnit:"大卡",  digits:1, convert:function(d){ return d / 15; },   convUnit:"层楼" },
+    { key:"protein",  label:"蛋白质", unit:"克",   diffUnit:"克",     digits:1, convert:function(d){ return d / 6; },     convUnit:"个鸡蛋" },
+    { key:"sodium",   label:"钠",     unit:"毫克", diffUnit:"毫克",   digits:2, convert:function(d){ return d / 1000; },  convUnit:"克" }
+  ];
+
+  /* ---------- DOM ---------- */
+  var noticeEl = document.getElementById("notice");
+  var emptyEl  = document.getElementById("empty");
+  var cardEl   = document.getElementById("card");
+  var nameAEl  = document.getElementById("nameA");
+  var nameBEl  = document.getElementById("nameB");
+  var metricsEl= document.getElementById("metrics");
+  var swapBtn  = document.getElementById("swap");
+
+  var ITEMS = [];
+
+  /* ---------- 工具 ---------- */
+  function num(n, digits) {
+    var p = Math.pow(10, digits === undefined ? 1 : digits);
+    return String(Math.round(n * p) / p);
+  }
+  function normalize(data) {
+    var raw = (data && data.items) ? data.items : data;
+    if (!raw || !raw.length) return [];
+    return raw.filter(function (it) {
+      return it && it.id && it.name &&
+             typeof it.calories === "number" &&
+             typeof it.protein === "number" &&
+             typeof it.sodium === "number";
+    }).map(function (it) {
+      return {
+        id: String(it.id),
+        name: String(it.name),
+        category: it.category ? String(it.category) : "",
+        calories: Number(it.calories),
+        protein: Number(it.protein),
+        sodium: Number(it.sodium)
+      };
+    });
+  }
+  function showNotice(text) { noticeEl.textContent = text; noticeEl.hidden = false; }
+  function clear(el) { while (el.firstChild) el.removeChild(el.firstChild); }
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined && text !== null) n.textContent = text;
+    return n;
+  }
+  function findItem(id) {
+    for (var i = 0; i < ITEMS.length; i++) { if (ITEMS[i].id === id) return ITEMS[i]; }
+    return null;
+  }
+
+  /* ---------- 读取 menu.json（三级降级） ---------- */
+  function xhrJson(url) {
+    return new Promise(function (resolve, reject) {
+      try {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        if (xhr.overrideMimeType) xhr.overrideMimeType("application/json");
+        xhr.onload = function () {
+          if (xhr.status === 0 || (xhr.status >= 200 && xhr.status < 300)) {
+            try { resolve(JSON.parse(xhr.responseText)); }
+            catch (e) { reject(e); }
+          } else { reject(new Error("XHR status " + xhr.status)); }
+        };
+        xhr.onerror = function () { reject(new Error("XHR network error")); };
+        xhr.send(null);
+      } catch (e) { reject(e); }
+    });
+  }
+  function loadMenu() {
+    var url = "menu.json";
+    var p = Promise.reject(new Error("no fetch"));
+    if (typeof fetch === "function") {
+      p = fetch(url, { cache: "no-store" }).then(function (res) {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      });
+    }
+    return p
+      .then(normalize)
+      .catch(function () { return xhrJson(url).then(normalize); })
+      .then(function (items) {
+        if (items && items.length) return { items: items, fallback: false };
+        return { items: normalize(EMBEDDED), fallback: true };
+      })
+      .catch(function () { return { items: normalize(EMBEDDED), fallback: true }; });
+  }
+
+  /* ---------- 资产体检（T5） ---------- */
+  /* 内嵌兜底：由 _gen_data.py 注入，与 assets.json 同源 */
+  var EMBEDDED_ASSETS = {
+    "version": 1,
+    /* ASSETS_EMBEDDED_START */
+    "generatedAt": 1792705513081,
+    "items": [
+      {"id":"mm-save-8","name":"麦麦省满减券（满30减8）","face":8,"unit":"元","count":2,"estimate":8.0,"expireAt":1792727113081},
+      {"id":"breakfast-50","name":"早餐套餐 5 折券","face":9,"unit":"元","count":1,"estimate":9.0,"expireAt":1792734313081},
+      {"id":"cone-exchange","name":"积分商城免费兑换券（甜筒）","face":1,"unit":"张","count":1,"estimate":6.0,"expireAt":1792773913081},
+      {"id":"nuggets-bogo","name":"麦乐鸡买一送一券","face":22,"unit":"元","count":1,"estimate":22.0,"expireAt":1792964713081},
+      {"id":"upsize-free","name":"免费升杯券","face":3,"unit":"元","count":3,"estimate":3.0,"expireAt":1793137513081},
+      {"id":"points-1280","name":"会员积分","face":1280,"unit":"分","count":1,"estimate":12.8,"expireAt":1795297513081},
+      {"id":"lucky-draw-3","name":"抽奖次数","face":3,"unit":"次","count":1,"estimate":5.0,"expireAt":1792619113081},
+      {"id":"birthday-burger","name":"生日免费汉堡券（待激活）","face":25,"unit":"元","count":1,"estimate":25.0,"expireAt":null}
+    ]
+  /* ASSETS_EMBEDDED_END */
+  };
+  var ASSETS = [];
+
+  /* 时间戳解析：任何异常都返回 null（渲染为"未知时间"），绝不抛错白屏 */
+  function parseExpire(v) {
+    if (v === null || v === undefined || v === "") return null;
+    var t = null;
+    if (typeof v === "number") {
+      t = v;
+    } else if (typeof v === "string") {
+      var n = Number(v);
+      if (v.trim() !== "" && !isNaN(n)) t = n;
+      else {
+        var d = Date.parse(v);
+        t = isNaN(d) ? null : d;
+      }
+    }
+    if (t === null || !isFinite(t) || t <= 0) return null;
+    if (t < 1e12) t = t * 1000;      // 兼容秒级时间戳
+    return t;
+  }
+
+  function normalizeAssets(data) {
+    var raw = (data && data.items) ? data.items : data;
+    if (!raw || !raw.length) return [];
+    return raw.filter(function (it) { return it && it.id && it.name; }).map(function (it) {
+      return {
+        id: String(it.id),
+        name: String(it.name),
+        face: Number(it.face) || 0,
+        unit: it.unit ? String(it.unit) : "",
+        count: Number(it.count) || 1,
+        estimate: Number(it.estimate) || 0,
+        expireAt: parseExpire(it.expireAt)   // 解析失败 → null
+      };
+    });
+  }
+
+  function leftMs(it, now) { return it.expireAt === null ? null : it.expireAt - now; }
+
+  /* 排序：未过期（越紧急越靠前）→ 已过期（越近越靠前）→ 未知时间 */
+  function sortAssets(list, now) {
+    function rank(it) {
+      var ms = leftMs(it, now);
+      return ms === null ? 2 : (ms <= 0 ? 1 : 0);
+    }
+    return list.slice().sort(function (x, y) {
+      var rx = rank(x), ry = rank(y);
+      if (rx !== ry) return rx - ry;
+      var lx = leftMs(x, now), ly = leftMs(y, now);
+      if (lx === null || ly === null) return 0;
+      return rx === 1 ? (ly - lx) : (lx - ly);
+    });
+  }
+
+  function leftText(ms) {
+    if (ms === null) return "—";
+    if (ms <= 0) return "—";
+    var h = ms / 3600000;
+    if (h < 1) return Math.max(1, Math.round(ms / 60000)) + " 分钟";
+    if (h < 24) return (Math.round(h * 10) / 10) + " 小时";
+    // 先取整到小时再拆分，否则会出现"2 天 24 小时"这种进位丢失的显示
+    var th = Math.round(h);
+    var dd = Math.floor(th / 24), rem = th % 24;
+    return rem === 0 ? (dd + " 天") : (dd + " 天 " + rem + " 小时");
+  }
+  function money(n) { return (Math.round(n * 10) / 10) + ""; }
+
+  function assetStats(now) {
+    var total = 0, loss = 0, lossN = 0;
+    ASSETS.forEach(function (it) {
+      var v = it.estimate * it.count;
+      total += v;
+      var ms = leftMs(it, now);
+      if (ms !== null && ms > 0 && ms < 86400000) { loss += v; lossN++; }
+    });
+    return { total: total, loss: loss, lossN: lossN };
+  }
+
+  function renderAssets() {
+    var now = Date.now();
+    var ul = document.getElementById("assetList");
+    clear(ul);
+    if (!ASSETS.length) {
+      ul.appendChild(el("li", "asset-empty", "暂无资产数据"));
+      return;
+    }
+    var list = sortAssets(ASSETS, now);
+    list.forEach(function (it) {
+      var ms = leftMs(it, now);
+      var urgent = ms !== null && ms > 0 && ms < 86400000;
+      var li = document.createElement("li");
+      if (urgent) li.className = "urgent";
+      else if (ms !== null && ms <= 0) li.className = "expired";
+
+      var left = el("div");
+      left.appendChild(el("div", "asset-name", it.name));
+      left.appendChild(el("div", "asset-meta",
+        "面值 " + it.face + (it.unit ? " " + it.unit : "") + " × " + it.count +
+        " ｜ 估值 " + money(it.estimate * it.count) + " 元"));
+      li.appendChild(left);
+
+      var right = el("div", "asset-left");
+      right.appendChild(document.createTextNode(leftText(ms)));
+      if (ms === null) right.appendChild(el("span", "tag unknown", "未知时间"));
+      else if (ms <= 0) right.appendChild(el("span", "tag expired", "已过期"));
+      else if (urgent) right.appendChild(el("span", "tag urgent", "即将过期"));
+      li.appendChild(right);
+
+      ul.appendChild(li);
+    });
+    var st = assetStats(now);
+    document.getElementById("sumTotal").textContent = money(st.total);
+    document.getElementById("sumLoss").textContent = money(st.loss);
+    document.getElementById("sumLossUnit").textContent = "元（" + st.lossN + " 项）";
+  }
+
+  /* 体检报告：原生 canvas 手绘 → PNG（严禁外部库） */
+  function exportReport() {
+    var now = Date.now();
+    var st = assetStats(now);
+    var list = sortAssets(ASSETS, now);
+
+    var W = 700, H = 820, DPR = 2;
+    var FONT = '\"Microsoft YaHei\",\"PingFang SC\",SimHei,sans-serif';
+    var cv = document.createElement("canvas");
+    cv.width = W * DPR; cv.height = H * DPR;
+    var ctx = cv.getContext("2d");
+    ctx.scale(DPR, DPR);
+
+    ctx.fillStyle = "#F3EADA"; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "#FFFDF7"; roundRect(ctx, 24, 24, W - 48, H - 48, 20); ctx.fill();
+
+    var L = 56, R = W - 56;
+
+    ctx.fillStyle = "#141110"; ctx.font = "800 26px " + FONT;
+    ctx.fillText("麦当劳 资产体检报告", L, 86);
+    ctx.fillStyle = "#FF4A1C"; ctx.font = "800 13px " + FONT;
+    var d = new Date(now);
+    var stamp = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" +
+                ("0" + d.getDate()).slice(-2) + " " + ("0" + d.getHours()).slice(-2) + ":" +
+                ("0" + d.getMinutes()).slice(-2);
+    ctx.fillText("生成时间 " + stamp + " ｜ 共 " + ASSETS.length + " 项资产", L, 110);
+
+    // 两个大数字块
+    var bw = (R - L - 14) / 2;
+    function sumBlock(x, y, w, label, numTxt, unitTxt, accent) {
+      ctx.fillStyle = accent ? "rgba(255,74,28,.10)" : "rgba(20,17,16,.05)";
+      roundRect(ctx, x, y, w, 92, 14); ctx.fill();
+      ctx.fillStyle = "rgba(20,17,16,.55)"; ctx.font = "12px " + FONT;
+      ctx.fillText(label, x + 14, y + 26);
+      ctx.fillStyle = accent ? "#FF4A1C" : "#141110";
+      ctx.font = "800 34px " + FONT;
+      ctx.fillText(numTxt, x + 14, y + 64);
+      var nw = ctx.measureText(numTxt).width;
+      ctx.fillStyle = "rgba(20,17,16,.6)"; ctx.font = "12px " + FONT;
+      ctx.fillText(" " + unitTxt, x + 18 + nw, y + 64);
+    }
+    sumBlock(L, 132, bw, "当前总资产估值", money(st.total), "元", false);
+    sumBlock(L + bw + 14, 132, bw, "24 小时内即将流失", money(st.loss), "元（" + st.lossN + " 项）", true);
+
+    // 预警条
+    var warnY = 244;
+    if (st.lossN > 0) {
+      ctx.fillStyle = "rgba(255,74,28,.12)";
+      roundRect(ctx, L, warnY, R - L, 44, 10); ctx.fill();
+      ctx.fillStyle = "#FF4A1C"; ctx.font = "800 14px " + FONT;
+      ctx.fillText("即将流失预警：" + st.lossN + " 项资产将在 24 小时内过期，价值 " + money(st.loss) + " 元 —— 赶紧用掉！", L + 14, warnY + 28);
+    } else {
+      ctx.fillStyle = "rgba(20,17,16,.05)";
+      roundRect(ctx, L, warnY, R - L, 44, 10); ctx.fill();
+      ctx.fillStyle = "rgba(20,17,16,.65)"; ctx.font = "13px " + FONT;
+      ctx.fillText("未来 24 小时内没有资产过期，安全。", L + 14, warnY + 28);
+    }
+
+    // 清单
+    var y = 318;
+    ctx.fillStyle = "#141110"; ctx.font = "800 15px " + FONT;
+    ctx.fillText("资产清单（按剩余时间排序）", L, y);
+    y += 20;
+
+    var shown = Math.min(list.length, 8);
+    for (var i = 0; i < shown; i++) {
+      var it = list[i];
+      var ms = leftMs(it, now);
+      var urgent = ms !== null && ms > 0 && ms < 86400000;
+      var yy = y + 26;
+
+      ctx.fillStyle = urgent ? "rgba(255,74,28,.07)" : "rgba(20,17,16,.03)";
+      roundRect(ctx, L, yy - 17, R - L, 38, 9); ctx.fill();
+
+      ctx.fillStyle = "#141110"; ctx.font = "700 13px " + FONT;
+      ctx.fillText(it.name, L + 12, yy + 2);
+
+      ctx.fillStyle = "rgba(20,17,16,.55)"; ctx.font = "11px " + FONT;
+      ctx.fillText(it.face + (it.unit ? " " + it.unit : "") + " × " + it.count, L + 300, yy + 2);
+
+      ctx.textAlign = "right";
+      ctx.fillStyle = "#141110"; ctx.font = "700 13px " + FONT;
+      ctx.fillText(money(it.estimate * it.count) + " 元", R - 110, yy + 2);
+
+      ctx.fillStyle = (ms === null) ? "rgba(20,17,16,.45)" : (ms <= 0 ? "rgba(20,17,16,.45)" : (urgent ? "#FF4A1C" : "rgba(20,17,16,.7)"));
+      ctx.font = (urgent ? "800 " : "") + "12px " + FONT;
+      ctx.fillText(ms === null ? "未知时间" : (ms <= 0 ? "已过期" : ("剩 " + leftText(ms))), R - 12, yy + 2);
+      ctx.textAlign = "left";
+
+      y += 44;
+    }
+
+    ctx.fillStyle = "rgba(20,17,16,.5)"; ctx.font = "11px " + FONT;
+    ctx.fillText("资产数据为本地模拟数据，估值按面值与数量折算，仅供参考", L, H - 48);
+    ctx.textAlign = "right";
+    ctx.fillText("mcd-fact-card", R, H - 48);
+    ctx.textAlign = "left";
+
+    try {
+      var url = cv.toDataURL("image/png");
+      if (!url || url.indexOf("data:image/png") !== 0) throw new Error("toDataURL 返回为空");
+      var link = document.createElement("a");
+      link.href = url;
+      link.download = "mcd-asset-report_" + stamp.replace(/[-: ]/g, "") + ".png";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      var hint = document.getElementById("reportHint");
+      hint.textContent = "已生成体检报告 PNG（" + (url.length / 1024).toFixed(0) + " KB），正在下载…";
+      hint.hidden = false;
+    } catch (e) {
+      var hint2 = document.getElementById("reportHint");
+      hint2.textContent = "生成失败：" + e.message;
+      hint2.hidden = false;
+    }
+  }
+
+  function loadAssets() {
+    var url = "assets.json";
+    var p = Promise.reject(new Error("no fetch"));
+    if (typeof fetch === "function") {
+      p = fetch(url, { cache: "no-store" }).then(function (res) {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      });
+    }
+    return p.then(normalizeAssets)
+      .catch(function () { return xhrJson(url).then(normalizeAssets); })
+      .then(function (items) {
+        if (items && items.length) return { items: items, fallback: false };
+        return { items: normalizeAssets(EMBEDDED_ASSETS), fallback: true };
+      })
+      .catch(function () { return { items: normalizeAssets(EMBEDDED_ASSETS), fallback: true }; });
+  }
+
+  /* ---------- 选餐品：原生 <datalist>（零依赖） ---------- */
+  var inputA = document.getElementById("inputA");
+  var inputB = document.getElementById("inputB");
+  var shareBtn = document.getElementById("shareBtn");
+  var shareHint = document.getElementById("shareHint");
+  var sel = { A: null, B: null };   // 存餐品 id
+
+  function findByName(name) {
+    for (var i = 0; i < ITEMS.length; i++) { if (ITEMS[i].name === name) return ITEMS[i]; }
+    return null;
+  }
+
+  /* 填充 datalist：value=餐品名，label=分类+热量（浏览器下拉会显示 label） */
+  function fillDatalist() {
+    var dl = document.getElementById("menuList");
+    clear(dl);
+    ITEMS.forEach(function (it) {
+      var op = document.createElement("option");
+      op.value = it.name;
+      op.setAttribute("label", (CATEGORY_NAMES[it.category] || "") + " · " + it.calories + " 大卡");
+      dl.appendChild(op);
+    });
+  }
+
+  /* datalist 只提供建议，用户可以手输任意值 —— 必须校验是否为真实餐品，
+     否则会出现"输入框有名字、数据却是上一项"的错位。 */
+  function sync(which) {
+    var v = (which === "A" ? inputA : inputB).value.trim();
+    var it = findByName(v);
+    sel[which] = it ? it.id : null;
+    render();
+  }
+
+  /* ---------- 榜单：直接读数据按卡路里排序 ---------- */
+  function fillRank(id, arr) {
+    var ol = document.getElementById(id);
+    clear(ol);
+    arr.forEach(function (it) {
+      var li = document.createElement("li");
+      var line1 = el("div", "line1");
+      line1.appendChild(el("span", "nm", it.name));
+      line1.appendChild(el("span", "kc", it.calories + " 大卡"));
+      li.appendChild(line1);
+      li.appendChild(el("div", "sub",
+        "蛋白 " + it.protein + " g ／ 钠 " + it.sodium + " mg"));
+      ol.appendChild(li);
+    });
+  }
+  function renderRank() {
+    if (!ITEMS.length) return;
+    var byCal = ITEMS.slice().sort(function (x, y) { return y.calories - x.calories; });
+    fillRank("rankHot", byCal.slice(0, 5));           // 热量最高的 5 条（降序）
+    fillRank("rankGood", byCal.slice(-5).reverse());  // 热量最低的 5 条（升序）
+  }
+
+  /* ---------- 分享：Canvas 手绘对比卡 → 导出 PNG（严禁外部库） ---------- */
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+  function drawBar(ctx, x, y, w, h, ratio, isHigh) {
+    ctx.fillStyle = "rgba(20,17,16,.09)";
+    roundRect(ctx, x, y, w, h, h / 2); ctx.fill();
+    ctx.fillStyle = isHigh ? "#FF4A1C" : "rgba(20,17,16,.72)";
+    var ww = Math.max(w * ratio, h);
+    roundRect(ctx, x, y, Math.min(ww, w), h, h / 2); ctx.fill();
+  }
+  function drawRow(ctx, L, R, y, name, v, m, isHigh, max, FONT) {
+    ctx.fillStyle = "rgba(20,17,16,.55)";
+    ctx.font = "13px " + FONT;
+    ctx.fillText(name, L, y);
+    var bx = L + 190, bw = R - bx - 96;
+    drawBar(ctx, bx, y - 9, bw, 10, v / max, isHigh);
+    ctx.fillStyle = isHigh ? "#FF4A1C" : "#141110";
+    ctx.font = (isHigh ? "800 " : "") + "13px " + FONT;
+    ctx.textAlign = "right";
+    ctx.fillText(v + " " + m.unit, R, y);
+    ctx.textAlign = "left";
+  }
+
+  function exportPNG() {
+    var a = findItem(sel.A), b = findItem(sel.B);
+    if (!a || !b || a.id === b.id) return;
+
+    var W = 700, H = 920, DPR = 2;
+    var FONT = '"Microsoft YaHei","PingFang SC",SimHei,sans-serif';
+    var cv = document.createElement("canvas");
+    cv.width = W * DPR;
+    cv.height = H * DPR;
+    var ctx = cv.getContext("2d");
+    ctx.scale(DPR, DPR);
+
+    // 纸色底 + 卡片
+    ctx.fillStyle = "#F3EADA";
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "#FFFDF7";
+    roundRect(ctx, 24, 24, W - 48, H - 48, 20);
+    ctx.fill();
+
+    var L = 56, R = W - 56;
+
+    // 标题
+    ctx.fillStyle = "#141110";
+    ctx.font = "800 26px " + FONT;
+    ctx.fillText("麦当劳 营养对比卡", L, 86);
+    ctx.fillStyle = "#FF4A1C";
+    ctx.font = "800 14px " + FONT;
+    ctx.fillText("热量 / 蛋白质 / 钠 真实差距", L, 112);
+
+    // A VS B（过长自动缩字号）
+    var head = a.name + "   VS   " + b.name;
+    var size = 22;
+    ctx.font = "800 " + size + "px " + FONT;
+    while (ctx.measureText(head).width > (R - L) && size > 12) {
+      size -= 1;
+      ctx.font = "800 " + size + "px " + FONT;
+    }
+    ctx.fillStyle = "#141110";
+    ctx.fillText(head, L, 152);
+
+    // 三项指标
+    var y = 196;
+    METRICS.forEach(function (m) {
+      var va = a[m.key], vb = b[m.key];
+      var max = Math.max(va, vb, 1);
+      var diff = va - vb, ad = Math.abs(diff);
+
+      ctx.fillStyle = "#141110";
+      ctx.font = "800 15px " + FONT;
+      ctx.fillText(m.label + "（单位：" + m.unit + "）", L, y);
+      y += 26;
+
+      drawRow(ctx, L, R, y, a.name, va, m, diff > 0, max, FONT); y += 30;
+      drawRow(ctx, L, R, y, b.name, vb, m, diff < 0, max, FONT); y += 30;
+
+      // 差值：lead + 特大数字 + 情绪文案 + 对比条 + 图例（与页面同源）
+      var hi = diff > 0 ? a : b, lo = diff > 0 ? b : a;
+      ctx.fillStyle = "rgba(255,74,28,.08)";
+      roundRect(ctx, L - 12, y - 16, R - L + 24, 152, 12);
+      ctx.fill();
+
+      ctx.fillStyle = "rgba(20,17,16,.55)";
+      ctx.font = "12px " + FONT;
+      ctx.fillText(hi.name + " 比 " + lo.name + " 高出", L, y);
+      y += 40;
+
+      var bigTxt = ad === 0 ? "0" : num(ad);
+      ctx.fillStyle = "#FF4A1C";
+      ctx.font = "800 34px " + FONT;
+      ctx.fillText(bigTxt, L, y);
+      var nw = ctx.measureText(bigTxt).width;
+      ctx.fillStyle = "#141110";
+      ctx.font = "700 13px " + FONT;
+      ctx.fillText(" " + m.diffUnit, L + nw + 5, y);
+      y += 22;
+
+      ctx.fillStyle = "rgba(20,17,16,.78)";
+      ctx.font = "13px " + FONT;
+      ctx.fillText(ad === 0 ? "谁也没赢，这局平手" : emotionText(m, ad), L, y);
+      y += 22;
+
+      var total = va + vb;
+      var pa = total > 0 ? (va / total) : 0.5;
+      var bw = R - L;
+      if (pa >= 0.995) {                 // 一方占比 100% 时只画一段，避免 1px 突刺
+        ctx.fillStyle = pa >= 0.5 ? "#FF4A1C" : "rgba(20,17,16,.85)";
+        roundRect(ctx, L, y, bw, 10, 5); ctx.fill();
+      } else {
+        ctx.fillStyle = "#FF4A1C";
+        roundRect(ctx, L, y, bw * pa, 10, 5); ctx.fill();
+        ctx.fillStyle = "rgba(20,17,16,.85)";
+        roundRect(ctx, L + bw * pa, y, bw * (1 - pa), 10, 5); ctx.fill();
+      }
+      y += 22;
+
+      ctx.font = "11px " + FONT;
+      ctx.fillStyle = "#FF4A1C";
+      ctx.fillText(a.name + " " + Math.round(pa * 100) + "%", L, y);
+      ctx.textAlign = "right";
+      ctx.fillStyle = "rgba(20,17,16,.6)";
+      ctx.fillText(b.name + " " + Math.round((1 - pa) * 100) + "%", R, y);
+      ctx.textAlign = "left";
+      y += 34;
+    });
+
+    // 页脚口径
+    ctx.fillStyle = "rgba(20,17,16,.55)";
+    ctx.font = "11px " + FONT;
+    ctx.fillText("热量 15 大卡 ≈ 1 层楼 ｜ 蛋白质 6 克 ≈ 1 个鸡蛋 ｜ 钠 按毫克→克换算", L, H - 48);
+    ctx.textAlign = "right";
+    ctx.fillText("mcd-fact-card", R, H - 48);
+    ctx.textAlign = "left";
+
+    // 导出（canvas 未绘制外部图片，不会污染画布，file:// 下也可导出）
+    try {
+      var url = cv.toDataURL("image/png");
+      if (!url || url.indexOf("data:image/png") !== 0) throw new Error("toDataURL 返回为空");
+      var link = document.createElement("a");
+      link.href = url;
+      link.download = "mcd-fact-card_" + a.name + "_VS_" + b.name + ".png";
+      link.id = "downloadLink";
+      document.body.appendChild(link);   // 挂到 DOM，便于自动化测试断言
+      link.click();
+      document.body.removeChild(link);
+      shareHint.textContent = "已生成 PNG（" + (url.length / 1024).toFixed(0) + " KB），正在下载…";
+      shareHint.hidden = false;
+    } catch (e) {
+      shareHint.textContent = "生成失败：" + e.message;
+      shareHint.hidden = false;
+    }
+  }
+
+  /* ---------- 渲染对比卡 ---------- */
+
+  /* 情绪化换算文案：数值 + 网感表达，页面与导出图共用同一函数，避免两处说法不一致 */
+  function emotionText(m, ad) {
+    if (m.key === "calories") {
+      var f = num(ad / 15);
+      if (ad >= 300) return "相当于爬 " + f + " 层楼，帕梅拉白跳了";
+      if (ad >= 150) return "相当于爬 " + f + " 层楼，得走半小时才还清";
+      return "相当于爬 " + f + " 层楼，小意思";
+    }
+    if (m.key === "protein") {
+      var e = num(ad / 6);
+      if (ad >= 15) return "≈ " + e + " 个鸡蛋，这顿肉真没白吃";
+      if (ad >= 6) return "≈ " + e + " 个鸡蛋，差距不算大";
+      return "≈ " + e + " 个鸡蛋，基本打平";
+    }
+    var g = num(ad / 1000, 2);
+    if (ad >= 800) return "换算 ≈ " + g + " 克，钠含量直接爆表";
+    if (ad >= 400) return "换算 ≈ " + g + " 克，钠有点多，明天多喝水";
+    return "换算 ≈ " + g + " 克，差距可控";
+  }
+  function metricBlock(m, a, b) {
+    var va = a[m.key], vb = b[m.key];
+    var diff = va - vb;                 // 正 = A 更高
+    var ad = Math.abs(diff);
+    var max = Math.max(va, vb, 1);
+
+    var wrap = el("div", "metric");
+
+    var title = el("div", "metric-title");
+    title.appendChild(el("b", null, m.label));
+    title.appendChild(el("span", null, "单位：" + m.unit));
+    wrap.appendChild(title);
+
+    // A 行
+    var ra = el("div", "row" + (diff > 0 ? " hi" : ""));
+    ra.appendChild(el("div", "who", a.name));
+    var ba = el("div", "bar"); var ia = el("i");
+    ia.style.width = Math.max(4, (va / max) * 100).toFixed(1) + "%";
+    ba.appendChild(ia); ra.appendChild(ba);
+    ra.appendChild(el("div", "val", num(va) + " " + m.unit));
+    wrap.appendChild(ra);
+
+    // B 行
+    var rb = el("div", "row" + (diff < 0 ? " hi" : ""));
+    rb.appendChild(el("div", "who", b.name));
+    var bb = el("div", "bar"); var ib = el("i");
+    ib.style.width = Math.max(4, (vb / max) * 100).toFixed(1) + "%";
+    bb.appendChild(ib); rb.appendChild(bb);
+    rb.appendChild(el("div", "val", num(vb) + " " + m.unit));
+    wrap.appendChild(rb);
+
+    // 差值：大数字 + 小单位 + 情绪化换算 + A/B 对比条
+    var d = el("div", "diff");
+
+    if (ad === 0) {
+      d.appendChild(el("div", "diff-lead", "两者持平"));
+      var z = el("div", "diff-num");
+      z.appendChild(el("b", null, "0"));
+      z.appendChild(el("span", "unit", m.diffUnit));
+      d.appendChild(z);
+      d.appendChild(el("div", "diff-txt", "谁也没赢，这局平手"));
+      wrap.appendChild(d);
+      return wrap;
+    }
+
+    // 主语固定为「数值更高的那一方」，动词固定为「高出」，避免出现"A 比 B 低 X"的反向误读
+    var higher = diff > 0 ? a : b;
+    var lower = diff > 0 ? b : a;
+
+    d.appendChild(el("div", "diff-lead", higher.name + " 比 " + lower.name + " 高出"));
+
+    var dn = el("div", "diff-num");
+    dn.appendChild(el("b", null, num(ad)));
+    dn.appendChild(el("span", "unit", m.diffUnit));
+    d.appendChild(dn);
+
+    d.appendChild(el("div", "diff-txt", emotionText(m, ad)));
+
+    // 对比条：A 朱橙 / B 墨黑，按两者占比切分
+    var total = va + vb;
+    var pa = total > 0 ? (va / total * 100) : 50;
+    var pb = total > 0 ? (vb / total * 100) : 50;
+    var dbar = el("div", "diff-bar");
+    var sa = el("i", "ba"); sa.style.width = pa.toFixed(1) + "%";
+    var sb = el("i", "bb"); sb.style.width = pb.toFixed(1) + "%";
+    dbar.appendChild(sa); dbar.appendChild(sb);
+    d.appendChild(dbar);
+
+    var lg = el("div", "diff-legend");
+    lg.appendChild(el("span", "la", a.name + " " + pa.toFixed(0) + "%"));
+    lg.appendChild(el("span", "lb", b.name + " " + pb.toFixed(0) + "%"));
+    d.appendChild(lg);
+
+    wrap.appendChild(d);
+    return wrap;
+  }
+
+  function render() {
+    var a = findItem(sel.A);
+    var b = findItem(sel.B);
+    shareBtn.disabled = !(a && b && a.id !== b.id);
+    if (shareBtn.disabled) shareHint.hidden = true;
+
+    if (!a || !b || a.id === b.id) {
+      cardEl.hidden = true;
+      emptyEl.hidden = false;
+      return;
+    }
+    emptyEl.hidden = true;
+    cardEl.hidden = false;
+    // 重新触发淡入动画（hidden 切换不会自动重放 animation）
+    cardEl.classList.remove("show");
+    void cardEl.offsetWidth;
+    cardEl.classList.add("show");
+
+    nameAEl.textContent = a.name;
+    nameBEl.textContent = b.name;
+
+    clear(metricsEl);
+    METRICS.forEach(function (m) { metricsEl.appendChild(metricBlock(m, a, b)); });
+  }
+
+  /* ---------- Tab 切换 ---------- */
+  var tabCompare = document.getElementById("tabCompare");
+  var tabAssets = document.getElementById("tabAssets");
+  var viewCompare = document.getElementById("viewCompare");
+  var viewAssets = document.getElementById("viewAssets");
+
+  function switchView(which) {
+    var isCmp = which === "compare";
+    viewCompare.hidden = !isCmp;
+    viewAssets.hidden = isCmp;
+    tabCompare.className = "tab" + (isCmp ? " is-active" : "");
+    tabAssets.className = "tab" + (isCmp ? "" : " is-active");
+    var v = isCmp ? viewCompare : viewAssets;
+    v.classList.remove("view"); void v.offsetWidth; v.classList.add("view");
+  }
+  tabCompare.addEventListener("click", function () { switchView("compare"); });
+  tabAssets.addEventListener("click", function () { switchView("assets"); });
+  document.getElementById("reportBtn").addEventListener("click", exportReport);
+
+  /* ---------- 启动 ---------- */
+  inputA.addEventListener("input", function () { sync("A"); });
+  inputB.addEventListener("input", function () { sync("B"); });
+  document.getElementById("clearA").addEventListener("click", function () {
+    inputA.value = ""; sync("A"); inputA.focus();
+  });
+  document.getElementById("clearB").addEventListener("click", function () {
+    inputB.value = ""; sync("B"); inputB.focus();
+  });
+  shareBtn.addEventListener("click", exportPNG);
+
+  swapBtn.addEventListener("click", function () {
+    var ta = inputA.value, tb = inputB.value;
+    inputA.value = tb;
+    inputB.value = ta;
+    sync("A"); sync("B");
+  });
+
+  loadMenu().then(function (result) {
+    ITEMS = result.items;
+    fillDatalist();
+    renderRank();
+    if (result.fallback) {
+      showNotice("提示：当前为本地直接打开（file://），浏览器安全策略拦截了 menu.json 的读取，" +
+                 "已自动使用内置的同源数据（" + ITEMS.length + " 条）。如需读取 menu.json，请在本目录执行 " +
+                 "python -m http.server 后通过 http://localhost:8000 访问。");
+    }
+    render();
+  });
+
+  loadAssets().then(function (r) {
+    ASSETS = r.items;
+    renderAssets();
+  });
+})();
+</script>
+</body>
+</html>

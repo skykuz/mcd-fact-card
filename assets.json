@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "source": "模拟的麦当劳用户资产数据（演示用，非真实账户数据）",
+  "generatedAt": 1792705513081,
+  "note": "过期时间戳 = 生成时刻 + 相对偏移；重跑 _gen_data.py 可刷新为当前时间基准",
+  "unit": {
+    "estimate": "元"
+  },
+  "items": [
+    {
+      "id": "mm-save-8",
+      "name": "麦麦省满减券（满30减8）",
+      "face": 8,
+      "unit": "元",
+      "count": 2,
+      "estimate": 8.0,
+      "expireAt": 1792727113081
+    },
+    {
+      "id": "breakfast-50",
+      "name": "早餐套餐 5 折券",
+      "face": 9,
+      "unit": "元",
+      "count": 1,
+      "estimate": 9.0,
+      "expireAt": 1792734313081
+    },
+    {
+      "id": "cone-exchange",
+      "name": "积分商城免费兑换券（甜筒）",
+      "face": 1,
+      "unit": "张",
+      "count": 1,
+      "estimate": 6.0,
+      "expireAt": 1792773913081
+    },
+    {
+      "id": "nuggets-bogo",
+      "name": "麦乐鸡买一送一券",
+      "face": 22,
+      "unit": "元",
+      "count": 1,
+      "estimate": 22.0,
+      "expireAt": 1792964713081
+    },
+    {
+      "id": "upsize-free",
+      "name": "免费升杯券",
+      "face": 3,
+      "unit": "元",
+      "count": 3,
+      "estimate": 3.0,
+      "expireAt": 1793137513081
+    },
+    {
+      "id": "points-1280",
+      "name": "会员积分",
+      "face": 1280,
+      "unit": "分",
+      "count": 1,
+      "estimate": 12.8,
+      "expireAt": 1795297513081
+    },
+    {
+      "id": "lucky-draw-3",
+      "name": "抽奖次数",
+      "face": 3,
+      "unit": "次",
+      "count": 1,
+      "estimate": 5.0,
+      "expireAt": 1792619113081
+    },
+    {
+      "id": "birthday-burger",
+      "name": "生日免费汉堡券（待激活）",
+      "face": 25,
+      "unit": "元",
+      "count": 1,
+      "estimate": 25.0,
+      "expireAt": null
+    }
+  ]
+}

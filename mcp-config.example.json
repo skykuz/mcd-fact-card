@@ -1,0 +1,22 @@
+{
+  "_comment": "示例配置 —— 请勿在此文件写入真实凭据。Token 位置固定为 {{TOKEN}} 占位符。真实配置请放到仓库外（例如 ~/.workbuddy/mcp.json）并通过环境变量注入。",
+  "_usage": [
+    "1. 复制本文件为 mcp-config.json（该文件不应提交到仓库）",
+    "2. 将其中的 {{TOKEN}} 替换为你自己的凭据",
+    "3. 或在运行环境中设置 NUTRITION_MCP_TOKEN 环境变量，避免凭据落盘"
+  ],
+  "mcpServers": {
+    "nutrition-foods": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "{{MCP_PACKAGE_OR_SCRIPT}}"
+      ],
+      "env": {
+        "NUTRITION_MCP_TOKEN": "{{TOKEN}}"
+      },
+      "transport": "stdio",
+      "disabled": false
+    }
+  }
+}
