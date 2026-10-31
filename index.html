@@ -300,7 +300,9 @@
   @keyframes pop{from{opacity:0;transform:translateY(6px) scale(.96);}to{opacity:1;transform:none;}}
   @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 
-  footer{margin-top:18px;font-size:11px;color:var(--muted);text-align:center;}
+  footer{margin-top:18px;font-size:11px;color:var(--muted);text-align:center;line-height:1.8;}
+  footer .powered{margin-top:10px;letter-spacing:.3px;}
+  footer .powered .wb{color:var(--accent);font-weight:700;}
 
   @media (max-width:680px){
     .rank-wrap{grid-template-columns:1fr;}
@@ -422,7 +424,10 @@
     </div>
   </section>
 
-  <footer>换算口径：热量 15 大卡 ≈ 爬 1 层楼 ｜ 蛋白质 6 克 ≈ 1 个鸡蛋 ｜ 钠按毫克→克换算</footer>
+  <footer>
+    换算口径：热量 15 大卡 ≈ 爬 1 层楼 ｜ 蛋白质 6 克 ≈ 1 个鸡蛋 ｜ 钠按毫克→克换算
+    <div class="powered">Powered by <span class="wb">WorkBuddy</span> · 纯原生极客打造</div>
+  </footer>
 
 </div>
 
